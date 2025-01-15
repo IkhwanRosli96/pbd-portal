@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{url_for('static', filename='/assets/img/apple-icon.png')}}">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='/assets/img/favicon.png')}}">
+    <title>
+        Biodiversity Digitalisation - {% block title %}{% endblock %}
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="{{url_for('static', filename='/assets/css/nucleo-icons.css')}}" rel="stylesheet" />
+    <link href="{{url_for('static', filename='/assets/css/nucleo-svg.css')}}" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="{{url_for('static', filename='/assets/css/nucleo-svg.css')}}" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="{{url_for('static', filename='/assets/css/soft-ui-dashboard.css')}}" rel="stylesheet" />
+
+</head>
+<style>
+    #side-image {
+        background-image: url("{{url_for('static',filename='images/symphony of life.png')}}");
+        background-size: 100% 100%;
+    }
+    #login-submit-btn{
+        background-color: darkgreen;
+        color:white;
+    }
+    .container {
+        height: 100%;
+        position: relative;
+    }
+
+    .card_center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+<body class="">
+    <div class="container position-sticky z-index-sticky top-0">
+        <div class="row">
+            <div class="col-12">
+            </div>
+        </div>
+    </div>
+    <main class="main-content  mt-0">
+        <div class="col-6 d-lg-flex d-none h-100 w-55 my-auto pe-0 position-absolute text-center justify-content-center flex-column">
+            <div class="position-relative bg-gradient-muted h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden"
+                id="side-image">
+                <span class="mask bg-gradient-muted opacity-3"></span>
+            </div>
+        </div>
+        <div
+            class="col-6 d-lg-flex d-none h-100 w-45 my-auto position-absolute pe-0 position-absolute top-0 end-0 text-center justify-content-center">
+            <div class="container">
+                <div class="card card-plain card_center w-70">
+                    <div class="card-header pb-0 text-center">
+                        <img src="{{url_for('static',filename='images/logo-no-background.png')}}"
+                        style="width: 100%" alt="PintarMind">
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="my-login-validation" action="/" enctype="multipart/form-data"> 
+                            {{ form.csrf_token }}
+                            <div class="mb-3">
+                                {{ form.username(class="form-control form-control-lg",placeholder="Username") }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.password(class="form-control form-control-lg",placeholder="Password") }}
+                            </div> 
+                            <div class="text-center">
+                                <button type="submit" id="login-submit-btn"
+                                    class="btn btn-lg  btn-lg w-100 mt-4 mb-0">Sign in</button>
+                            </div>
+                        </form> 
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                {% if category == 'wrong_cred' or category == 'pass_change' %}
+                                <div class="alert mt-1 text-danger alert-dismissible fade show" role="alert">
+                                    <strong>{{ message }}</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <!--   Core JS Files   -->
+    <!--   Core JS Files   -->
+    <script src="{{url_for('static', filename='/assets/js/core/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='/assets/js/core/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='/assets/js/core/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='/assets/js/plugins/smooth-scrollbar.min.js')}}"></script>
+
+    <!-- Github buttons -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="{{url_for('static', filename='/assets/js/soft-ui-dashboard.min.js')}}"></script>
+    
+    <script>
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = {
+                damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+    </script>
+</body>
+
+</html>
+

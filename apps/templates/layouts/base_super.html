@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{url_for('static', filename='/assets/img/apple-icon.png')}}">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='/assets/img/favicon.png')}}">
+    <title>
+        Biodiversity Digitalisation - {% block title %}{% endblock %}
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="{{url_for('static', filename='/assets/css/nucleo-icons.css')}}" rel="stylesheet" />
+    <link href="{{url_for('static', filename='/assets/css/nucleo-svg.css')}}" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/a352cd3ac4.js" crossorigin="anonymous"></script>
+    <link href="{{url_for('static', filename='/assets/css/nucleo-svg.css')}}" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="{{url_for('static', filename='/assets/css/soft-ui-dashboard.css')}}" rel="stylesheet" />
+
+    <!-- Specific CSS goes HERE -->
+    {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+
+<body class="g-sidenav-show  bg-gray-100">
+    {% include 'includes/sidebar_super.html' %}
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    {% include 'includes/navigation.html' %}
+    {% block content %}{% endblock content %}
+    </main>
+    {% include 'includes/scripts.html' %}
+    <!-- Specific Page JS goes HERE  -->
+    {% block javascripts %}{% endblock javascripts %}
+
+</body>
+
+</html>

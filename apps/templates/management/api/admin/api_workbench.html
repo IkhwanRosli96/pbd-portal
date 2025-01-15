@@ -1,0 +1,94 @@
+{% if user.privilage == 1 %}
+{% extends "layouts/base_super.html" %}
+{% elif user.privilage == 2 %}
+{% extends "layouts/base_admin.html" %}
+{% endif %}
+
+{% block title %} API Management {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .child {
+        flex: 1;
+        /* additionally, equal width */
+
+        padding: 1em;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header border-0" id="card_header">
+                        <div class="row">
+                            <h5>API Workbench</h5>
+                        </div>
+                    </div>
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0 overflow-hidden">
+                            <table class="table align-items-center justify-content-center mb-0 overflow-hidden">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs  font-weight-bolder text-center opacity-8">
+                                            No.</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs  font-weight-bolder text-center opacity-8">
+                                            API Requestor</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                            Request Date</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                            API Acceptor</th>
+                                            <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                            Accepted Date</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if api_response_list %}
+                                    {% for request in api_response_list %}
+                                    <tr>
+                                        <td class="text-sm mb-0 text-center">{{loop.index}}</td>
+                                        <td class="text-sm mb-0 text-center">{{request.result_request_api_user.username}}</td>
+                                        <td class="text-sm mb-0 text-center">{{request.result_api_request.created_at.strftime('%d-%m-%Y')}}</td>
+                                        <td class="text-sm mb-0 text-center">{{request.result_response_api_user.username}}</td>
+                                        <td class="text-sm mb-0 text-center">{{request.created_at.strftime('%d-%m-%Y')}}</td>
+                                        <td></td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
+    <!-- Specific Page JS goes HERE  -->
+    {% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('.subpage').text('Management')
+            $('.page').text('API Management')
+            $('.title').text('API Workbench')
+
+        });
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = {
+                damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+    </script>
+    {% endblock javascripts %}

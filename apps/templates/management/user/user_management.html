@@ -1,0 +1,345 @@
+{% extends "layouts/base_super.html" %}
+
+{% block title %} User Management {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header border-0" id="card_header">
+                    <div class="row">
+                        <div class="col-10">
+                            <h3>List of User</h4>
+                        </div>
+                        <div class="col-2 text-end">
+                            <button type="button" class="btn bg-gradient-success" data-bs-toggle="modal"
+                                data-bs-target="#createUser">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0 overflow-hidden">
+                        <table class="table align-items-center justify-content-center mb-0 overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs  font-weight-bolder text-center opacity-8">
+                                        User</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                        Date Created</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                        Privilege</th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                        Allowed Collection</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td class="align-items-center justify-content-center text-center">
+                                        <p class="text-sm mb-0">{{ user.username }}</p>
+                                    </td>
+                                    <td class="align-items-center justify-content-center text-center">
+                                        <p class="text-sm font-weight-bold mb-0">{{ user.created_at }}</p>
+                                    </td>
+                                    <td class="align-items-center justify-content-center text-center">
+                                        {% if user.privilege == 0 %}
+                                        <p class="text-sm font-weight-bold mb-0">Super Admin</p>
+                                        {% elif user.privilege == 1 %}
+                                        <p class="text-sm font-weight-bold mb-0">Admin</p>
+                                        {% else %}
+                                        <p class="text-sm font-weight-bold mb-0">User</p>
+                                        {% endif %}
+                                    </td>
+                                    <td class="align-items-center justify-content-center text-center">
+                                        <p class="text-sm mb-0">{{ user.allowed_collection | join(', ') }}</p>
+                                    </td>
+                                    <td
+                                        class="dropdown align-items-center justify-content-center text-center position-static">
+                                        <button type="button" class="btn bg-gradient-success dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                        <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
+                                            <li>
+                                                <a class="dropdown-item border-radius-md" href="javascript:;"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#updatePassowrd{{user.username}}">
+                                                    Change Password
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item border-radius-md" href="javascript:;"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#updateUser{{user.username}}">
+                                                    Update
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <form id="deleteForm{{user.username}}" class="mt-2"
+                                                    action="{{ url_for('admin_blueprint.delete_user') }}" method="post"
+                                                    enctype="multipart/form-data">
+                                                    {{ update_pwd_form.csrf_token }}
+                                                    {{ update_pwd_form.username(class="form-control
+                                                    form-control-lg", disabled=False, value=user.username)
+                                                    }}
+                                                    <a class="dropdown-item border-radius-md" href="javascript:{};"
+                                                        onclick="deleteConfirmation('{{user.username }}')" >
+                                                        Delete
+                                                    </a>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <!-- Start of Update Password Modal -->
+                                <div class="modal fade" id="updatePassowrd{{user.username}}" tabindex="-1"
+                                    role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header text-center">
+                                                <div style="text-align: center;">Change Password - {{user.username}}
+                                                </div>
+                                            </div>
+                                            <form action="{{ url_for('admin_blueprint.change_password') }}"
+                                                method="post" enctype="multipart/form-data">
+                                                {{ update_pwd_form.csrf_token }}
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        {{ update_pwd_form.username(class="form-control
+                                                        form-control-lg", disabled=False, value=user.username)
+                                                        }}
+
+                                                        {{ update_pwd_form.current_pwd.label }}
+                                                        {{ update_pwd_form.current_pwd(class="form-control
+                                                        form-control-lg")
+                                                        }}
+                                                        <div class="invalid-feedback">
+                                                            Please provide your password.
+                                                        </div>
+
+
+                                                        {{ update_pwd_form.new_pwd.label }}
+                                                        {{ update_pwd_form.new_pwd(class="form-control
+                                                        form-control-lg")
+                                                        }}
+
+                                                        {{ update_pwd_form.confirm_pwd.label }}
+                                                        {{ update_pwd_form.confirm_pwd(class="form-control
+                                                        form-control-lg")
+                                                        }}
+                                                        <div id="repwd-invalid-feedback" class="invalid-feedback"></div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End of Update Password Modal -->
+
+                                <!-- Start of Update User Modal -->
+                                <div class="modal fade" id="updateUser{{user.username}}" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header text-center">
+                                                <div style="text-align: center;">Change User Details- {{user.username}}
+                                                </div>
+                                            </div>
+                                            <form action="{{ url_for('admin_blueprint.update_user') }}" method="post"
+                                                enctype="multipart/form-data">
+                                                {{ update_usr_form.csrf_token }}
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        {{ update_usr_form.selected_user(class="form-control
+                                                        form-control-lg", disabled=False, value=user.username)
+                                                        }}
+
+                                                        {{ update_usr_form.username.label }}
+                                                        {{ update_usr_form.username(class="form-control
+                                                        form-control-lg", disabled=True, value=user.username)
+                                                        }}
+
+                                                        {{ update_usr_form.current_privilege.label }}
+                                                        {% if user.privilege == 0 %}
+                                                        {{ update_usr_form.current_privilege(class="form-control
+                                                        form-control-lg", disabled=True, value="Super Admin")
+                                                        }}
+                                                        {% elif user.privilege == 1 %}
+                                                        {{ update_usr_form.current_privilege(class="form-control
+                                                        form-control-lg", disabled=True, value="Admin")
+                                                        }}
+                                                        {% else %}
+                                                        {{ update_usr_form.current_privilege(class="form-control
+                                                        form-control-lg", disabled=True, value="User")
+                                                        }}
+                                                        {% endif %}
+
+                                                        {{ update_usr_form.current_allowed_collection.label }}
+                                                        {{ update_usr_form.current_allowed_collection(class="form-control
+                                                        form-control-lg", disabled=True, value=user.allowed_collection | join(', '))
+                                                        }}
+
+                                                        <div id="repwd-invalid-feedback" class="invalid-feedback"></div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End of Update User Modal -->
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% if category == 'not_same_pass'%}
+        <div class="alert alert-danger alert-dismissible text-white">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <strong>Error!</strong> {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    <footer class="footer pt-3  ">
+        <div class="container-fluid">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-12 mb-lg-0 mb-4">
+                    <div class="copyright text-center font-weight-bolder text-sm text-muted text-lg-start">
+                        ©
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>
+                        , Centre for Artificial Intelligence and Robotics | UTM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<!-- User Creation Modal -->
+<div class="modal fade" id="createUser" tabindex="-1" role="dialog" aria-labelledby="createUserLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <div style="text-align: center;">Create New User</div>
+            </div>
+            <form action="{{ url_for('admin_blueprint.create_user') }}" method="post" enctype="multipart/form-data">
+                {{ create_usr_form.csrf_token }}
+                <div class="modal-body">
+                    <div class="form-group">
+                        {{ create_usr_form.username.label }}
+                        {{ create_usr_form.username(class="form-control form-control-lg") }}
+
+                        {{ create_usr_form.password.label }}
+                        {{ create_usr_form.password(class="form-control form-control-lg") }}
+
+                        {{ create_usr_form.privilege.label }}
+                        {{ create_usr_form.privilege(class="form-control form-control-lg", id="privilege-select") }}
+
+                        <div id="database-access-section" style="display: none; margin-top: 20px;">
+                            <label>Database Access</label>
+                            <select id="access-type" class="form-control form-control-lg">
+                                <option value="ALL">All Collections</option>
+                                <option value="SELECTED">Selected Collections</option>
+                            </select>
+                        </div>
+
+                        <div id="collection-list-section" style="display: none; margin-top: 20px;">
+                            <label>Select Collections</label>
+                            <div id="collection-checkboxes">
+                                {% for collection in collections %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="collections" value="{{ collection }}" id="collection-{{ collection }}">
+                                        <label class="form-check-label" for="collection-{{ collection }}">{{ collection }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    $(document).ready(function () {
+        $('.subpage').text('Management')
+        $('.page').text('User Management')
+        $('.title').text('List of User')
+        
+    });
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+        var options = {
+            damping: '0.5'
+        }
+        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+    function deleteConfirmation(username) {
+        let formName = "deleteForm" + username
+        let text = 'Are you sure you want to delete this item?';
+        if (confirm(text) == true) {
+            document.getElementById(formName).submit();
+        }
+    }
+    document.getElementById('privilege-select').addEventListener('change', function() {
+        const privilege = this.value;
+        const accessSection = document.getElementById('database-access-section');
+        const collectionSection = document.getElementById('collection-list-section');
+        if (privilege === '2') { // User
+            accessSection.style.display = 'block';
+        } else {
+            accessSection.style.display = 'none';
+            collectionSection.style.display = 'none';
+        }
+    });
+
+    document.getElementById('access-type').addEventListener('change', function() {
+        const collectionSection = document.getElementById('collection-list-section');
+        if (this.value === 'SELECTED') {
+            collectionSection.style.display = 'block';
+        } else {
+            collectionSection.style.display = 'none';
+        }
+    });
+</script>
+{% endblock javascripts %}

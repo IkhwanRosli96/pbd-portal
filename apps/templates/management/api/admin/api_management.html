@@ -1,0 +1,200 @@
+{% if user.privilage == 1 %}
+{% extends "layouts/base_super.html" %}
+{% elif user.privilage == 2 %}
+{% extends "layouts/base_admin.html" %}
+{% endif %}
+
+{% block title %} API Management {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .child {
+        flex: 1;
+        /* additionally, equal width */
+
+        padding: 1em;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header border-0" id="card_header">
+                        <div class="row">
+                            <h5>List of New API Request</h5>
+                        </div>
+                    </div>
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0 overflow-hidden">
+                            <table class="table align-items-center justify-content-center mb-0 overflow-hidden">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs  font-weight-bolder text-center opacity-8">
+                                            User</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                            Request Date</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-8">
+                                            Request Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if api_request_list %}
+                                    {% for request in api_request_list %}
+                                    <tr data-bs-toggle="collapse" data-bs-target="#request_{{ request._id }}">
+                                        <td class="text-center"><i class="fa fa-solid fa-chevron-down"></i></td>
+                                        <td class="align-items-center justify-content-center text-center">
+                                            <p class="text-sm mb-0">{{ request.request_owner.username }}</p>
+                                        </td>
+                                        <td class="align-items-center justify-content-center text-center">
+                                            <p class="text-sm mb-0">{{ request.created_at.strftime('%d-%m-%Y') }}</p>
+                                        </td>
+                                        <td class="align-items-center justify-content-center text-center">
+                                            <p class="text-sm mb-0">{{ request.created_at.strftime('%H:%M:%S') }}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" pt-0 border-0" colspan="5">
+                                            <div class="collapse flex-column mb-2" id="request_{{ request._id }}"
+                                                data-bs-parent="#menu">
+                                                <div class="row mt-1">
+                                                    <div class="col-1"></div>
+                                                    <div
+                                                        class="col-10 text-center text-dark bg-gradient-success border-1 rounded">
+                                                        <b>Input Parameter</b>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <div class="row mt-1">
+                                                    <div class="col-1"></div>
+                                                    <div class="col-10 text-center text-dark bg-light">{{
+                                                        request.input_parameter|join(', ') }}</div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-1"></div>
+                                                    <div
+                                                        class="col-10 text-center text-dark bg-gradient-success border-1 rounded">
+                                                        <b>Input Parameter Type</b>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <div class="row mt-1">
+                                                    <div class="col-1"></div>
+                                                    <div class="col-10 text-center text-dark bg-light">{{
+                                                        request.input_parameter_type|join(', ') }}</div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-1"></div>
+                                                    <div
+                                                        class="col-10 text-center text-dark bg-gradient-success border-1 rounded">
+                                                        <b>Input Parameter Example</b>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <div class="row mt-1">
+                                                    <div class="col-1"></div>
+                                                    <div class="col-10 text-center text-dark bg-light">{{
+                                                        request.input_parameter_example|join(', ') }}</div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-1"></div>
+                                                    <div
+                                                        class="col-10 text-center text-dark bg-gradient-success border-1 rounded">
+                                                        <b>Expected Output</b>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <div class="row mt-1">
+                                                    <div class="col-1"></div>
+                                                    <div class="col-10 text-center text-dark bg-light">{{
+                                                        request.expected_output }}</div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                                <form id="updateForm{{request._id}}"
+                                                    action="{{ url_for('api_request_blueprint.api_request_response') }}"
+                                                    method="post" enctype="multipart/form-data">
+                                                    {{ response_form.csrf_token }}
+                                                    {{ response_form.request_id(class="form-control
+                                                    form-control-lg", value=request._id)
+                                                    }}
+                                                    {{
+                                                    response_form.request_response(id="response_{}".format(request._id),
+                                                    class="form-control
+                                                    form-control-lg", value=1)
+                                                    }}
+                                                </form>
+                                                <div class="row mt-3">
+                                                    <div class="col-1"></div>
+                                                    <div class="col-5">
+                                                        <button class="btn bg-gradient-success w-100"
+                                                            onclick="requestUpdate('{{request._id }}', 1)">Accept</button>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <button class="btn bg-gradient-danger w-100"
+                                                            onclick="requestUpdate('{{request._id }}', 0)">Reject</button>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
+    <!-- Specific Page JS goes HERE  -->
+    {% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('.subpage').text('Management')
+            $('.page').text('API Management')
+            $('.title').text('List of New API Request')
+
+        });
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = {
+                damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+
+        function requestUpdate(request_id, api_response) {
+            let formName = "updateForm" + request_id
+            if (api_response == 1) {
+                let text = 'Are you sure you want to accept this request?';
+                document.getElementById("response_" + request_id).value = 1;
+                if (confirm(text) == true) {
+                    document.getElementById(formName).submit();
+                }
+            }
+            else {
+                let text = 'Are you sure you want to reject this request?';
+                document.getElementById("response_" + request_id).value = 0;
+                if (confirm(text) == true) {
+                    document.getElementById(formName).submit();
+                }
+            }
+        }
+
+
+    </script>
+    {% endblock javascripts %}
