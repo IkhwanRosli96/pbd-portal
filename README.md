@@ -1,6 +1,6 @@
-# PintarMind
+# PBD API User and Documentation Portal
 
-PintarMind is a Yolov5-based Model Training Web Application created by CAIRO UTM Researcher. This application was created to make Model Training using Yolov5 Framework easier.
+PBD API User and Documentation Portal is  Web Application created by PND UTM Researcher. This application was created to manage API user and the documentation of the APi. This portal also will be used to analyse the usage of the API.
 
 ## File Structure
 
@@ -51,5 +51,4 @@ PintarMind is a Yolov5-based Model Training Web Application created by CAIRO UTM
 ├── log
 ├── README.md
 ├── requirements.txt
-├── run.py
-```# pbd-portal
+└── run.py
